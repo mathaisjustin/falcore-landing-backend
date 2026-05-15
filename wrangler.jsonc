@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  "name": "falcore-landing-api",
+
+  "main": "src/index.ts",
+
+  "compatibility_date": "2025-05-14",
+
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+
+      "database_name": "falcore-landing-prod",
+
+      "database_id": "a2e9d1df-1c36-4266-a23b-b565d7bcea8c",
+
+      "migrations_dir": "prisma/migrations"
+    }
+  ]
+}

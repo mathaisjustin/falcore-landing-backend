@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Subscriber {
+  id String @id
+
+  email String @unique
+
+  full_name String?
+
+  source String?
+
+  is_waitlist Boolean @default(false)
+
+  is_newsletter Boolean @default(false)
+
+  waitlist_joined_at DateTime?
+
+  newsletter_joined_at DateTime?
+
+  subscribed_at DateTime @default(now())
+
+  welcome_email_sent Boolean @default(false)
+
+  welcome_email_type String?
+
+  welcome_sent_at DateTime?
+
+  ip_address String?
+
+  country String?
+
+  city String?
+
+  region String?
+
+  timezone String?
+
+  user_agent String?
+
+  browser String?
+
+  os String?
+
+  device_type String?
+
+  referrer_url String?
+
+  utm_source String?
+
+  utm_medium String?
+
+  utm_campaign String?
+
+  utm_term String?
+
+  utm_content String?
+
+  consent_given Boolean
+
+  notes String?
+
+  created_at DateTime @default(now())
+
+  updated_at DateTime @updatedAt
+
+  @@map("subscribers")
+}
