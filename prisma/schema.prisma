@@ -25,12 +25,6 @@ model Subscriber {
 
   subscribed_at DateTime @default(now())
 
-  welcome_email_sent Boolean @default(false)
-
-  welcome_email_type String?
-
-  welcome_sent_at DateTime?
-
   ip_address String?
 
   country String?
@@ -65,9 +59,103 @@ model Subscriber {
 
   notes String?
 
+  email_jobs EmailJob[]
+
+  email_events EmailEvent[]
+
   created_at DateTime @default(now())
 
   updated_at DateTime @updatedAt
 
   @@map("subscribers")
+}
+
+model EmailJob {
+  id String @id
+
+  subscriber_id String
+
+  email String
+
+  provider String?
+
+  job_type String
+
+  email_type String?
+
+  status String @default("pending")
+
+  priority Int @default(0)
+
+  scheduled_for DateTime
+
+  attempts Int @default(0)
+
+  max_attempts Int @default(3)
+
+  last_error String?
+
+  locked_at DateTime?
+
+  locked_by String?
+
+  processed_at DateTime?
+
+  email_events EmailEvent[]
+
+  created_at DateTime @default(now())
+
+  updated_at DateTime @updatedAt
+
+  subscriber Subscriber @relation(fields: [subscriber_id], references: [id])
+
+  @@index([status])
+
+  @@index([scheduled_for])
+
+  @@index([subscriber_id])
+
+  @@index([status, scheduled_for])
+
+  @@map("email_jobs")
+}
+
+model EmailEvent {
+  id String @id
+
+  subscriber_id String
+
+  email_job_id String?
+
+  email String
+
+  email_type String
+
+  provider String
+
+  provider_message_id String?
+
+  status String @default("queued")
+
+  error_message String?
+
+  attempts Int @default(0)
+
+  sent_at DateTime?
+
+  created_at DateTime @default(now())
+
+  subscriber Subscriber @relation(fields: [subscriber_id], references: [id])
+
+  email_job EmailJob? @relation(fields: [email_job_id], references: [id])
+
+  @@index([subscriber_id])
+
+  @@index([email_type])
+
+  @@index([status])
+
+  @@index([subscriber_id, email_type])
+
+  @@map("email_events")
 }

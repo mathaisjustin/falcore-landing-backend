@@ -11,6 +11,12 @@
     "nodejs_compat"
   ],
 
+  "triggers": {
+    "crons": [
+      "*/10 * * * *"
+    ]
+  },
+
   "d1_databases": [
     {
       "binding": "DB",

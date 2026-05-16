@@ -1,5 +1,9 @@
 import { Hono } from 'hono';
 
+import {
+  runOnboardingCron,
+} from './cron/onboarding.cron';
+
 import type { Bindings }
 from './types/env';
 
@@ -99,4 +103,27 @@ app.route(
   newsletterRoute
 );
 
-export default app;
+export default {
+  fetch: app.fetch,
+
+  scheduled: async (
+    event: ScheduledEvent,
+    env: Bindings,
+    ctx: ExecutionContext
+  ) => {
+    console.log(
+      'Running onboarding cron...'
+    );
+
+    const prisma =
+      createPrismaClient(
+        env.DB
+      );
+
+    ctx.waitUntil(
+      runOnboardingCron(
+        prisma
+      )
+    );
+  },
+};
