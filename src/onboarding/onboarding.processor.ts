@@ -3,6 +3,10 @@ import type {
   EmailJob,
 } from '@prisma/client';
 
+import type {
+  Bindings,
+} from '../types/env';
+
 import {
   determineOnboardingEmail,
 } from './onboarding.engine';
@@ -13,9 +17,18 @@ import {
   markEmailJobSent,
 } from '../services/email-job.service';
 
+import {
+  buildEmailTemplate,
+} from '../templates/emails/email-template.service';
+
+import {
+  sendEmail,
+} from '../providers/email/email.service';
+
 export const processOnboardingJob =
   async (
     prisma: PrismaClient,
+    env: Bindings,
     job: EmailJob
   ) => {
     try {
@@ -40,9 +53,48 @@ export const processOnboardingJob =
         return;
       }
 
-      console.log(
-        `Simulating send: ${emailType} -> ${job.email}`
+      const subscriber =
+        await prisma.subscriber.findUnique({
+          where: {
+            id: job.subscriber_id,
+          },
+        });
+
+      if (!subscriber) {
+        throw new Error(
+          'Subscriber not found'
+        );
+      }
+
+      const template =
+        buildEmailTemplate(
+          emailType,
+          subscriber.full_name || undefined
+        );
+
+    const sendResult =
+      await sendEmail(
+        env,
+        {
+          to: job.email,
+
+          subject:
+            template.subject,
+
+          html:
+            template.html,
+
+          text:
+            template.text,
+        }
       );
+
+      if (!sendResult.success) {
+        throw new Error(
+          sendResult.error ||
+            'Failed to send email'
+        );
+      }
 
       await prisma.emailEvent.create({
         data: {
@@ -64,6 +116,10 @@ export const processOnboardingJob =
           provider:
             job.provider ||
             'resend',
+
+          provider_message_id:
+            sendResult.messageId ||
+            null,
 
           status:
             'sent',

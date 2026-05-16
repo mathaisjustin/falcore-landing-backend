@@ -122,7 +122,8 @@ export default {
 
     ctx.waitUntil(
       runOnboardingCron(
-        prisma
+        prisma,
+        env
       )
     );
   },

@@ -1,5 +1,10 @@
-import type { PrismaClient }
-from '@prisma/client';
+import type {
+  PrismaClient,
+} from '@prisma/client';
+
+import type {
+  Bindings,
+} from '../types/env';
 
 import {
   getPendingEmailJobs,
@@ -11,7 +16,8 @@ import {
 
 export const runOnboardingCron =
   async (
-    prisma: PrismaClient
+    prisma: PrismaClient,
+    env: Bindings
   ) => {
     try {
       const jobs =
@@ -38,6 +44,7 @@ export const runOnboardingCron =
       ) {
         await processOnboardingJob(
           prisma,
+          env,
           job
         );
       }

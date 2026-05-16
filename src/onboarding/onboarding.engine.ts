@@ -4,8 +4,12 @@ import type {
 } from '@prisma/client';
 
 import {
+  EMAIL_TYPES,
+} from './onboarding.constants';
+
+import {
   determineFinalEmailType,
-  hasReceivedOnboarding,
+  shouldSkipEmail,
 } from './onboarding.rules';
 
 export const determineOnboardingEmail =
@@ -34,7 +38,7 @@ export const determineOnboardingEmail =
         },
       });
 
-    const alreadySentTypes =
+    const existingTypes =
       existingEvents.map(
         (
           event: {
@@ -44,18 +48,101 @@ export const determineOnboardingEmail =
           event.email_type
       );
 
-    const alreadyReceivedOnboarding =
-      hasReceivedOnboarding(
-        alreadySentTypes
+    const finalEmailType =
+      determineFinalEmailType(
+        subscriber
       );
 
+    if (!finalEmailType) {
+      return null;
+    }
+
+    /*
+      If combined already sent,
+      skip everything forever
+    */
+
     if (
-      alreadyReceivedOnboarding
+      existingTypes.includes(
+        EMAIL_TYPES.COMBINED_WELCOME
+      )
     ) {
       return null;
     }
 
-    return determineFinalEmailType(
-      subscriber
-    );
+    /*
+      Scenario 4 support
+
+      If user originally got
+      waitlist_welcome
+      and later joins newsletter,
+      send newsletter_welcome only
+
+      Same logic in reverse.
+    */
+
+    if (
+      finalEmailType ===
+      EMAIL_TYPES.COMBINED_WELCOME
+    ) {
+      const hasWaitlist =
+        existingTypes.includes(
+          EMAIL_TYPES.WAITLIST_WELCOME
+        );
+
+      const hasNewsletter =
+        existingTypes.includes(
+          EMAIL_TYPES.NEWSLETTER_WELCOME
+        );
+
+      /*
+        Both already sent
+      */
+
+      if (
+        hasWaitlist &&
+        hasNewsletter
+      ) {
+        return null;
+      }
+
+      /*
+        Waitlist already sent
+        -> send newsletter only
+      */
+
+      if (
+        hasWaitlist &&
+        !hasNewsletter
+      ) {
+        return EMAIL_TYPES.NEWSLETTER_WELCOME;
+      }
+
+      /*
+        Newsletter already sent
+        -> send waitlist only
+      */
+
+      if (
+        hasNewsletter &&
+        !hasWaitlist
+      ) {
+        return EMAIL_TYPES.WAITLIST_WELCOME;
+      }
+    }
+
+    /*
+      Prevent duplicates
+    */
+
+    if (
+      shouldSkipEmail(
+        existingTypes,
+        finalEmailType
+      )
+    ) {
+      return null;
+    }
+
+    return finalEmailType;
   };

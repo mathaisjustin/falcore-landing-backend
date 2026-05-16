@@ -8,25 +8,6 @@ type SubscriberState = {
   is_newsletter: boolean;
 };
 
-export const hasReceivedOnboarding =
-  (
-    sentEmailTypes: string[]
-  ) => {
-    return (
-      sentEmailTypes.includes(
-        EMAIL_TYPES.WAITLIST_WELCOME
-      ) ||
-
-      sentEmailTypes.includes(
-        EMAIL_TYPES.NEWSLETTER_WELCOME
-      ) ||
-
-      sentEmailTypes.includes(
-        EMAIL_TYPES.COMBINED_WELCOME
-      )
-    );
-  };
-
 export const determineFinalEmailType =
   (
     subscriber: SubscriberState
@@ -51,4 +32,37 @@ export const determineFinalEmailType =
     }
 
     return null;
+  };
+
+export const shouldSkipEmail =
+  (
+    existingTypes: string[],
+    targetEmailType: string
+  ) => {
+    /*
+      If combined email already sent,
+      onboarding fully complete
+    */
+
+    if (
+      existingTypes.includes(
+        EMAIL_TYPES.COMBINED_WELCOME
+      )
+    ) {
+      return true;
+    }
+
+    /*
+      Prevent duplicate sends
+    */
+
+    if (
+      existingTypes.includes(
+        targetEmailType
+      )
+    ) {
+      return true;
+    }
+
+    return false;
   };
