@@ -1,0 +1,174 @@
+falcore-landing-backend
+├── .gitignore
+├── README.md
+├── dev.db
+├── package-lock.json
+├── package.json
+├── prisma
+│   ├── migrations
+│   │   ├── 20260515204009_init_subscriber_system
+│   │   │   └── migration.sql
+│   │   ├── init.sql
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── prisma.config.ts
+├── src
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── analytics.routes.ts
+│   │   │   ├── auth.routes.ts
+│   │   │   ├── campaigns.routes.ts
+│   │   │   └── subscribers.routes.ts
+│   │   └── public
+│   │       ├── health.routes.ts
+│   │       ├── newsletter.routes.ts
+│   │       └── waitlist.routes.ts
+│   ├── app.ts
+│   ├── config
+│   │   ├── app.ts
+│   │   ├── env.ts
+│   │   └── security.ts
+│   ├── controllers
+│   │   ├── newsletter.controller.ts
+│   │   └── waitlist.controller.ts
+│   ├── cron
+│   │   └── onboarding.cron.ts
+│   ├── index.ts
+│   ├── infrastructure
+│   │   ├── cache
+│   │   ├── cron
+│   │   │   ├── cleanup.cron.ts
+│   │   │   ├── email-retry.cron.ts
+│   │   │   └── onboarding.cron.ts
+│   │   ├── db
+│   │   │   ├── migrations
+│   │   │   └── prisma.ts
+│   │   ├── providers
+│   │   │   ├── resend
+│   │   │   │   ├── resend.client.ts
+│   │   │   │   └── resend.provider.ts
+│   │   │   └── ses
+│   │   │       ├── ses.client.ts
+│   │   │       └── ses.provider.ts
+│   │   └── queue
+│   │       ├── email.queue.ts
+│   │       └── onboarding.queue.ts
+│   ├── lib
+│   │   └── prisma.ts
+│   ├── middleware
+│   │   ├── cors.ts
+│   │   ├── error.ts
+│   │   ├── logger.ts
+│   │   ├── rate-limit.ts
+│   │   ├── request-id.ts
+│   │   └── security.ts
+│   ├── modules
+│   │   ├── admin
+│   │   │   ├── admin.auth.ts
+│   │   │   ├── admin.middleware.ts
+│   │   │   ├── admin.service.ts
+│   │   │   └── admin.types.ts
+│   │   ├── analytics
+│   │   │   ├── analytics.constants.ts
+│   │   │   ├── analytics.service.ts
+│   │   │   └── analytics.types.ts
+│   │   ├── emails
+│   │   │   ├── email.constants.ts
+│   │   │   ├── email.events.ts
+│   │   │   ├── email.provider.ts
+│   │   │   ├── email.queue.ts
+│   │   │   ├── email.service.ts
+│   │   │   └── email.types.ts
+│   │   ├── newsletter
+│   │   │   ├── newsletter.constants.ts
+│   │   │   ├── newsletter.controller.ts
+│   │   │   ├── newsletter.service.ts
+│   │   │   ├── newsletter.templates.ts
+│   │   │   └── newsletter.types.ts
+│   │   ├── onboarding
+│   │   │   ├── onboarding.constants.ts
+│   │   │   ├── onboarding.engine.ts
+│   │   │   ├── onboarding.processor.ts
+│   │   │   ├── onboarding.rules.ts
+│   │   │   └── onboarding.types.ts
+│   │   ├── subscribers
+│   │   │   ├── subscriber.constants.ts
+│   │   │   ├── subscriber.controller.ts
+│   │   │   ├── subscriber.repository.ts
+│   │   │   ├── subscriber.service.ts
+│   │   │   ├── subscriber.types.ts
+│   │   │   └── subscriber.validators.ts
+│   │   └── waitlist
+│   │       ├── waitlist.constants.ts
+│   │       ├── waitlist.controller.ts
+│   │       ├── waitlist.service.ts
+│   │       ├── waitlist.templates.ts
+│   │       └── waitlist.types.ts
+│   ├── onboarding
+│   │   ├── onboarding.constants.ts
+│   │   ├── onboarding.engine.ts
+│   │   ├── onboarding.processor.ts
+│   │   ├── onboarding.rules.ts
+│   │   └── onboarding.types.ts
+│   ├── providers
+│   │   └── email
+│   │       ├── aws
+│   │       │   ├── ses.client.ts
+│   │       │   └── ses.provider.ts
+│   │       ├── email.provider.ts
+│   │       ├── email.service.ts
+│   │       ├── email.types.ts
+│   │       └── resend
+│   │           ├── resend.client.ts
+│   │           └── resend.provider.ts
+│   ├── routes
+│   │   ├── newsletter.ts
+│   │   └── waitlist.ts
+│   ├── server.ts
+│   ├── services
+│   │   ├── email
+│   │   │   ├── email.service.ts
+│   │   │   ├── email.templates.ts
+│   │   │   ├── email.types.ts
+│   │   │   └── resend.service.ts
+│   │   ├── email-event.service.ts
+│   │   ├── email-job.service.ts
+│   │   └── subscriber.service.ts
+│   ├── shared
+│   │   ├── constants
+│   │   │   └── index.ts
+│   │   ├── errors
+│   │   │   ├── app-error.ts
+│   │   │   └── error-handler.ts
+│   │   ├── logger
+│   │   │   └── logger.ts
+│   │   ├── middleware
+│   │   │   ├── auth.ts
+│   │   │   ├── cors.ts
+│   │   │   └── rate-limit.ts
+│   │   ├── types
+│   │   │   └── global.types.ts
+│   │   └── utils
+│   │       ├── api-response.ts
+│   │       ├── dates.ts
+│   │       ├── ids.ts
+│   │       └── strings.ts
+│   ├── templates
+│   │   └── emails
+│   │       ├── combined-welcome.template.ts
+│   │       ├── email-template.service.ts
+│   │       ├── email-template.types.ts
+│   │       ├── newsletter-welcome.template.ts
+│   │       └── waitlist-welcome.template.ts
+│   ├── types
+│   │   └── env.ts
+│   ├── utils
+│   │   ├── analytics.ts
+│   │   ├── api-error.ts
+│   │   ├── response.ts
+│   │   └── user-agent.ts
+│   └── validators
+│       └── subscriber.validator.ts
+├── structure.txt
+├── tsconfig.json
+└── wrangler.jsonc
